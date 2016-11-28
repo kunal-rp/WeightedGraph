@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -14,10 +15,11 @@ public class Main {
 class Vertex{
 
     private char letter;
-    private Iterator<Edge> edges;
+    private ArrayList<Edge> edges ;
 
     public Vertex(char letter){
         this.letter = letter;
+
     }
 
     public char getLetter(){
@@ -25,11 +27,30 @@ class Vertex{
     }
 
     public void printEdges(){
-
-        while(edges.hasNext()){
-            Edge temp = edges.next();
+        Iterator<Edge> edgelist = edges.iterator();
+        while(edgelist.hasNext()){
+            Edge temp = edgelist.next();
             System.out.print(letter + " "+ temp.getWeight() + " "+ temp.getVertex().getLetter()+ " , ");
         }
+    }
+
+    public boolean addEdge(Vertex vertex, int weight){
+        boolean result = true;
+        Iterator<Edge> edgelist = edges.iterator();
+        boolean duplicate = false;
+        while(edgelist.hasNext() && duplicate == false){
+            Edge temp = edgelist.next();
+            if(temp.getWeight() == weight && temp.getVertex().getLetter() == vertex.getLetter()){
+                duplicate = true;
+            }
+        }
+        if(duplicate == true){
+            result = false;
+        }
+        else{
+            edges.add(new Edge(vertex, weight));
+        }
+        return result;
     }
 
 }
