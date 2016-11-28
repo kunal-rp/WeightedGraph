@@ -16,14 +16,23 @@ class Vertex{
 
     private char letter;
     private ArrayList<Edge> edges ;
+    private boolean visited;
 
     public Vertex(char letter){
         this.letter = letter;
-
+        visited = false;
     }
 
     public char getLetter(){
         return letter;
+    }
+
+    public boolean isVisited(){
+        return visited;
+    }
+
+    public void visit(){
+        visited = true;
     }
 
     public void printEdges(){
@@ -49,6 +58,23 @@ class Vertex{
         }
         else{
             edges.add(new Edge(vertex, weight));
+        }
+        return result;
+    }
+
+    public boolean hasEdges(){
+        return edges.isEmpty();
+    }
+
+    public boolean hasNonvisitedEdge(){
+        boolean result = false;
+        Iterator<Edge> edgelist = edges.iterator();
+        while(edgelist.hasNext() ) {
+            Edge temp = edgelist.next();
+            if(temp.getVertex().isVisited() == false){
+                result = true;
+                break;
+            }
         }
         return result;
     }
