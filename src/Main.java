@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 
 /**
  * Created by KP Admin on 11/28/2016.
@@ -37,7 +38,33 @@ public class Main {
         graph.addEdge('M','N',1);
         graph.addEdge('F','L',1);
 
-        graph.print();
+        String command = "";
+        Scanner in = new Scanner(System.in);
+        while(!command.equals("Q")) {
+
+            System.out.println("Enter Command[PE = print edges,PP = print paths, A = add vertex, D = delete Vertex , E = add edge,Q = quit ]: ");
+            command = in.next();
+            switch (command){
+                case "PE":graph.print();break;
+                case "PP":graph.printOutPathLengths('A');break;
+                case "A":System.out.print("Letter to add:");
+                    char letter = in.next().charAt(0);
+                    graph.add(letter);
+                    break;
+                case "D":System.out.print("Letter to remove:");
+                    letter = in.next().charAt(0);
+                    graph.remove(letter);
+                    break;
+                case "E":System.out.print("Edge to Add:");
+                    String string = in.next();
+                    letter = string.charAt(0);
+                    int weight = Integer.parseInt(String.valueOf(string.charAt(1)));
+                    char letter2 = string.charAt(2);
+                    graph.addEdge(letter,letter2,weight);
+                    break;
+            }
+        }
+
 
 
         graph.printOutPathLengths('A');
@@ -63,7 +90,7 @@ class Graph{
         Vertex start = new Vertex('/');
         Vertex end = new Vertex('/');
         Iterator<Vertex> vertexList = vertexes.iterator();
-        while(vertexList.hasNext()){
+        while(vertexList.hasNext()&& (start.getLetter() == '/' || end.getLetter() == '/' )){
             Vertex temp = vertexList.next();
             if(temp.getLetter() == startChar){
                 start = temp;
@@ -71,6 +98,7 @@ class Graph{
             if(temp.getLetter() == endChar){
                 end = temp;
             }
+
         }
         start.addEdge(end, weight);
     }
@@ -116,12 +144,15 @@ class Graph{
 
        }
 
+       System.out.println("Paths from "+ originVertex.getLetter()+" :");
        PQueue pq = new PQueue();
        pq.add(originVertex);
        while (!pq.isEmpty()) {
 
            Vertex currentVertex = pq.pop();
-           System.out.println(currentVertex.getLetter() + " | "+ currentVertex.getCost());
+
+           if(currentVertex.getLetter() != originVertex.getLetter()){
+           System.out.println("to "+currentVertex.getLetter() + " : "+ currentVertex.getCost());}
            while (currentVertex.hasNonvisitedEdge()) {
                Vertex frontVertex =  currentVertex.getUnvisitedEdge().getVertex();
                int tempCost = currentVertex.getUnvisitedEdge().getWeight();
@@ -150,7 +181,7 @@ class Graph{
        while (vertexList.hasNext()) {
            Vertex temp = vertexList.next();
            if (temp.isVisited() == false && temp.getLetter() != originVertex.getLetter()) {
-              System.out.println(temp.getLetter() + " not reachable");
+              System.out.println("to "+temp.getLetter() + " :not reachable");
            }
        }
 
