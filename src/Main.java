@@ -36,7 +36,11 @@ public class Main {
         graph.addEdge('L','M',1);
         graph.addEdge('M','N',1);
         graph.addEdge('F','L',1);
+
         graph.print();
+
+        graph.printOutPathLengths('A');
+
 
 
     }
@@ -95,17 +99,91 @@ class Graph{
     }
 
 
+   public void printOutPathLengths(char letter) {
+
+       Vertex originVertex = new Vertex('/');
+       Iterator<Vertex> vertexList = vertexes.iterator();
+       while (vertexList.hasNext()) {
+           Vertex temp = vertexList.next();
+           if (temp.getLetter() == letter) {
+               originVertex = temp;
+               break;
+           }
+       }
+
+       PQueue pq = new PQueue();
+       pq.add(originVertex);
+       while (!pq.isEmpty()) {
+
+           Vertex currentVertex = pq.pop();
+           System.out.println(currentVertex.getLetter() + " | "+ currentVertex.getCost());
+           while (currentVertex.hasNonvisitedEdge()) {
+               Vertex frontVertex =  currentVertex.getUnvisitedEdge().getVertex();
+               int tempCost = currentVertex.getUnvisitedEdge().getWeight();
+
+               if(frontVertex.getCost() != 0){
+                    if(tempCost + currentVertex.getCost() < frontVertex.getCost()){
+                        frontVertex.setCost(tempCost + currentVertex.getCost());
+                        frontVertex.setParent(currentVertex);
+                    }
+
+               }
+               else {
+
+                   frontVertex.setParent(currentVertex);
+                   frontVertex.setCost(tempCost);
+                   if (frontVertex.getParent() != null) {
+                       frontVertex.setCost(frontVertex.getCost() + frontVertex.getParent().getCost());
+                   }
+                   frontVertex.visit();
+                   pq.add(frontVertex);
+               }
+           }
+
+       }
+       vertexList = vertexes.iterator();
+       while (vertexList.hasNext()) {
+           Vertex temp = vertexList.next();
+           if (temp.isVisited() == false && temp.getLetter() != originVertex.getLetter()) {
+              System.out.println(temp.getLetter() + " not reachable");
+           }
+       }
+
+
+   }
+
+
 }
 class Vertex{
 
     private char letter;
     private ArrayList<Edge> edges = new ArrayList<Edge>() ;
     private boolean visited;
+    private Vertex parent;
+    private int cost;
 
     public Vertex(char letter){
         this.letter = letter;
         visited = false;
+        parent = null;
     }
+
+    public void setParent(Vertex parent){
+        this.parent = parent;
+    }
+
+    public Vertex getParent(){
+        return parent;
+    }
+
+    public int getCost(){
+        return cost;
+    }
+
+    public void setCost(int cost){
+        this.cost = cost;
+    }
+
 
     public char getLetter(){
         return letter;
@@ -175,13 +253,13 @@ class Vertex{
         return result;
     }
 
-    public Vertex getUnvisitedVertex(){
-        Vertex result = new Vertex('/');
+    public Edge getUnvisitedEdge(){
+        Edge result = new Edge(new Vertex('/'),0);
         Iterator<Edge> edgelist = edges.iterator();
         while(edgelist.hasNext() ) {
             Edge temp = edgelist.next();
             if(temp.getVertex().isVisited() == false){
-                result = temp.getVertex();
+                result = temp;
                 break;
             }
         }
@@ -206,5 +284,74 @@ class Edge{
 
     public Vertex getVertex(){
         return vertex;
+    }
+}
+
+class PQueue{
+
+    private Node head = null;
+
+    public Vertex peek(){
+        return head.getVertex();
+    }
+
+    public boolean isEmpty(){
+        if(head == null){
+            return true;
+        }
+        return false;
+    }
+
+    public Vertex pop(){
+        Vertex vertex = head.getVertex();
+        head = head.getNext();
+        return vertex;
+    }
+
+    public void add(Vertex vertex){
+        Node nodeToAdd = new Node(vertex);
+        if(head == null || head.getVertex().getCost() > vertex.getCost()){
+            nodeToAdd.setNext(head);
+            head = nodeToAdd;
+        }
+
+        else {
+            Node q = head;
+            Node p = head.getNext();
+            while (p!= null && p.getVertex().getCost() < vertex.getCost()) {
+                p = p.getNext();
+                q = q.getNext();
+            }
+            q.setNext(nodeToAdd);
+            nodeToAdd.setNext(p);
+        }
+    }
+
+}
+
+class Node{
+
+    private Vertex vertex;
+    private Node next;
+
+    public Node(Vertex vertex){
+        this.vertex = vertex;
+        next = null;
+    }
+
+    public Vertex getVertex(){
+        return vertex;
+    }
+
+    public void setVertex(Vertex vertex){
+        this.vertex = vertex;
+    }
+
+    public void setNext(Node node){
+        next = node;
+    }
+
+    public Node getNext(){
+        return next;
     }
 }
