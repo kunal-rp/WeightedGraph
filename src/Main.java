@@ -12,12 +12,33 @@ public class Main {
         graph.add('A');
         graph.add('B');
         graph.add('C');
-        graph.addEdge('A','B',3);
-        graph.addEdge('B','C',4);
-        graph.addEdge('B','A',4);
+        graph.add('D');
+        graph.add('E');
+        graph.add('F');
+        graph.add('G');
+        graph.add('H');
+        graph.add('K');
+        graph.add('L');
+        graph.add('M');
+        graph.add('N');
+        graph.addEdge('A','B',2);
+        graph.addEdge('B','C',3);
+        graph.addEdge('C','D',2);
+        graph.addEdge('E','A',2);
+        graph.addEdge('B','F',1);
+        graph.addEdge('C','G',2);
+        graph.addEdge('E','F',2);
+        graph.addEdge('G','F',2);
+        graph.addEdge('G','H',3);
+        graph.addEdge('H','N',2);
+        graph.addEdge('K','E',1);
+        graph.addEdge('K','L',3);
+        graph.addEdge('L','M',1);
+        graph.addEdge('M','N',1);
+        graph.addEdge('F','L',1);
         graph.print();
-        graph.remove('C');
-        graph.print();
+
+
     }
 
 }
