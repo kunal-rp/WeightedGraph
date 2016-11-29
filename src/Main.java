@@ -39,8 +39,10 @@ public class Main {
 
         graph.print();
 
-        graph.printOutPathLengths('A');
 
+        graph.printOutPathLengths('A');
+        System.out.println("---------");
+        graph.printOutPathLengths('C');
 
 
     }
@@ -105,10 +107,13 @@ class Graph{
        Iterator<Vertex> vertexList = vertexes.iterator();
        while (vertexList.hasNext()) {
            Vertex temp = vertexList.next();
+           temp.setCost(0);
+           temp.setParent(null);
+           temp.resetVisit();
            if (temp.getLetter() == letter) {
                originVertex = temp;
-               break;
            }
+
        }
 
        PQueue pq = new PQueue();
@@ -195,6 +200,10 @@ class Vertex{
 
     public void visit(){
         visited = true;
+    }
+
+    public void resetVisit(){
+        visited = false;
     }
 
     public void removeEdge(Vertex vertex){
